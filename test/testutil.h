@@ -6,26 +6,26 @@
 static int vtokeq(const char *s, jsmntok_t *t, unsigned long numtok,
                   va_list ap) {
   if (numtok > 0) {
-    unsigned long i;
-    int start, end, size;
-    int type;
+    uint64_t i;
+    int64_t start, end, size;
+    int64_t type;
     char *value;
 
     size = -1;
     value = NULL;
     for (i = 0; i < numtok; i++) {
-      type = va_arg(ap, int);
+      type = va_arg(ap, int64_t);
       if (type == JSMN_STRING) {
         value = va_arg(ap, char *);
-        size = va_arg(ap, int);
+        size = va_arg(ap, int64_t);
         start = end = -1;
       } else if (type == JSMN_PRIMITIVE) {
         value = va_arg(ap, char *);
         start = end = size = -1;
       } else {
-        start = va_arg(ap, int);
-        end = va_arg(ap, int);
-        size = va_arg(ap, int);
+        start = va_arg(ap, int64_t);
+        end = va_arg(ap, int64_t);
+        size = va_arg(ap, int64_t);
         value = NULL;
       }
       if (t[i].type != type) {
@@ -34,11 +34,11 @@ static int vtokeq(const char *s, jsmntok_t *t, unsigned long numtok,
       }
       if (start != -1 && end != -1) {
         if (t[i].start != start) {
-          printf("token %lu start is %d, not %d\n", i, t[i].start, start);
+          printf("token %lu start is %ld, not %d\n", i, t[i].start, start);
           return 0;
         }
         if (t[i].end != end) {
-          printf("token %lu end is %d, not %d\n", i, t[i].end, end);
+          printf("token %lu end is %ld, not %d\n", i, t[i].end, end);
           return 0;
         }
       }
@@ -49,7 +49,7 @@ static int vtokeq(const char *s, jsmntok_t *t, unsigned long numtok,
 
       if (s != NULL && value != NULL) {
         const char *p = s + t[i].start;
-        if (strlen(value) != (unsigned long)(t[i].end - t[i].start) ||
+        if (strlen(value) != (uint64_t)(t[i].end - t[i].start) ||
             strncmp(p, value, t[i].end - t[i].start) != 0) {
           printf("token %lu value is %.*s, not %s\n", i, t[i].end - t[i].start,
                  s + t[i].start, value);

@@ -25,6 +25,7 @@
 #define JSMN_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,11 +69,11 @@ enum jsmnerr {
  */
 typedef struct {
   jsmntype_t type;
-  int start;
-  int end;
-  int size;
+  int64_t start;
+  int64_t end;
+  int64_t size;
 #ifdef JSMN_PARENT_LINKS
-  int parent;
+  int64_t parent;
 #endif
 } jsmntok_t;
 
@@ -81,8 +82,8 @@ typedef struct {
  * the string being parsed now and current position in that string.
  */
 typedef struct {
-  unsigned int pos;     /* offset in the JSON string */
-  unsigned int toknext; /* next token to allocate */
+  uint64_t pos;     /* offset in the JSON string */
+  uint64_t toknext; /* next token to allocate */
   int toksuper;         /* superior token node, e.g. parent object or array */
 } jsmn_parser;
 
@@ -96,7 +97,7 @@ JSMN_API void jsmn_init(jsmn_parser *parser);
  * describing
  * a single JSON object.
  */
-JSMN_API int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
+JSMN_API int64_t jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
                         jsmntok_t *tokens, const unsigned int num_tokens);
 
 #ifndef JSMN_HEADER
@@ -132,11 +133,11 @@ static void jsmn_fill_token(jsmntok_t *token, const jsmntype_t type,
 /**
  * Fills next available token with JSON primitive.
  */
-static int jsmn_parse_primitive(jsmn_parser *parser, const char *js,
+static int64_t jsmn_parse_primitive(jsmn_parser *parser, const char *js,
                                 const size_t len, jsmntok_t *tokens,
                                 const size_t num_tokens) {
   jsmntok_t *token;
-  int start;
+  int64_t start;
 
   start = parser->pos;
 
@@ -190,12 +191,12 @@ found:
 /**
  * Fills next token with JSON string.
  */
-static int jsmn_parse_string(jsmn_parser *parser, const char *js,
+static int64_t jsmn_parse_string(jsmn_parser *parser, const char *js,
                              const size_t len, jsmntok_t *tokens,
                              const size_t num_tokens) {
   jsmntok_t *token;
 
-  int start = parser->pos;
+  int64_t start = parser->pos;
 
   parser->pos++;
 
@@ -222,7 +223,7 @@ static int jsmn_parse_string(jsmn_parser *parser, const char *js,
 
     /* Backslash: Quoted symbol expected */
     if (c == '\\' && parser->pos + 1 < len) {
-      int i;
+      int64_t i;
       parser->pos++;
       switch (js[parser->pos]) {
       /* Allowed escaped symbols */
@@ -265,12 +266,12 @@ static int jsmn_parse_string(jsmn_parser *parser, const char *js,
 /**
  * Parse JSON string and fill tokens.
  */
-JSMN_API int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
+JSMN_API int64_t jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
                         jsmntok_t *tokens, const unsigned int num_tokens) {
-  int r;
-  int i;
+  int64_t r;
+  int64_t i;
   jsmntok_t *token;
-  int count = parser->toknext;
+  int64_t count = parser->toknext;
 
   for (; parser->pos < len && js[parser->pos] != '\0'; parser->pos++) {
     char c;
