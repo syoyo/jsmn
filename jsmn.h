@@ -84,7 +84,7 @@ typedef struct {
 typedef struct {
   uint64_t pos;     /* offset in the JSON string */
   uint64_t toknext; /* next token to allocate */
-  int toksuper;         /* superior token node, e.g. parent object or array */
+  int64_t toksuper;         /* superior token node, e.g. parent object or array */
 } jsmn_parser;
 
 /**
@@ -98,7 +98,7 @@ JSMN_API void jsmn_init(jsmn_parser *parser);
  * a single JSON object.
  */
 JSMN_API int64_t jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
-                        jsmntok_t *tokens, const unsigned int num_tokens);
+                        jsmntok_t *tokens, const size_t num_tokens);
 
 #ifndef JSMN_HEADER
 /**
@@ -123,7 +123,7 @@ static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser, jsmntok_t *tokens,
  * Fills token type and boundaries.
  */
 static void jsmn_fill_token(jsmntok_t *token, const jsmntype_t type,
-                            const int start, const int end) {
+                            const int64_t start, const int64_t end) {
   token->type = type;
   token->start = start;
   token->end = end;
@@ -267,7 +267,7 @@ static int64_t jsmn_parse_string(jsmn_parser *parser, const char *js,
  * Parse JSON string and fill tokens.
  */
 JSMN_API int64_t jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
-                        jsmntok_t *tokens, const unsigned int num_tokens) {
+                        jsmntok_t *tokens, const size_t num_tokens) {
   int64_t r;
   int64_t i;
   jsmntok_t *token;

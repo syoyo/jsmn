@@ -121,7 +121,7 @@ int test_partial_string(void) {
 int test_partial_array(void) {
 #ifdef JSMN_STRICT
   int r;
-  unsigned long i;
+  uint32_t i;
   jsmn_parser p;
   jsmntok_t tok[10];
   const char *js = "[ 1, true, [123, \"hello\"]]";
